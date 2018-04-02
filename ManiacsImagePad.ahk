@@ -1,354 +1,246 @@
-#NoEnv
+ï»¿#NoEnv
 #SingleInstance, force
 
-If !pToken := Gdip_Startup()
-	{
+If !pToken:= Gdip_Startup()
+{
 	MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
 	ExitApp
-	}
-SysGet, VirtualWidth, 78
-SysGet, VirtualHeight, 79
+}
+SysGet, virtualWidth, 78
+SysGet, virtualHeight, 79
 
 Tempfile=%A_Temp%\imagelist.tmp
-Interval=30
+interval:=30
 
-GuimaxW:=480
-GuimaxH:=480
-BNx:=GuimaxW-20
-BNy:=GuimaxH-20
-;%GuimaxW%
-;%GuimaxH%
-; ÍÐ±P²Ë†Î
-If A_IsCompiled=1
+guiMaxWidth:=480
+guiMaxHeight:=480
+BNx:=guiMaxWidth-20
+BNy:=guiMaxHeight-20
+
+If A_IsCompiled
 	Menu, tray, NoStandard
 Menu, Tray, Icon,%A_scriptdir%\Data\tray.ico,, 1
 Menu, tray, add
 Loop, %A_WorkingDir%\Data\*, 2, 0
-	{
-	Menu, tray, add, %A_LoopFileName%, IndexImage
-	}
+{
+	Menu, tray, add, %A_LoopFileName%, IndexImage, +Radio
+}
 Menu, tray, add
-Menu, tray, add, ¼ì²é¸üÐÂ, Update
-Menu, tray, add, ÍË³ö, WinClose
+Menu, tray, add, æ£€æŸ¥æ›´æ–°, Update
+Menu, tray, add, é€€å‡º, WinClose
 
-;OnMessage(0xF, "WM_PAINT")
 OnMessage(0x201, "WM_LBUTTONDOWN")
 
 Gui, +LastFound +Toolwindow +AlwaysonTop -Caption -SysMenu -Resize
-Gui, Add, Picture, x0 y0 w%GuimaxW% h%GuimaxH% vStaticImage, %A_WorkingDir%\Data\Logo.png
-Gui, Add, Button, x12 y10 w100 h30 vButton5s g5s, 5 Ãë
-Gui, Add, Button, x122 y10 w100 h30 vButton10s g10s, 10Ãë
-Gui, Add, Button, x232 y10 w100 h30 vButton20s g20s, 20 Ãë
-Gui, Add, Button, x342 y10 w100 h30 vButton30s g30s, 30Ãë
-Gui, Add, Button, x12 y60 w100 h30 vButton1m g1m, 1 ·ÖÖÓ
-Gui, Add, Button, x122 y60 w100 h30 vButton2m g2m, 2 ·ÖÖÓ
-Gui, Add, Button, x232 y60 w100 h30 vButton3m g3m, 3 ·ÖÖÓ
-Gui, Add, Button, x342 y60 w100 h30 vButton5m g5m, 5 ·ÖÖÓ
-Gui, Add, Button, x12 y110 w100 h30 vButton10m g10m, 10 ·ÖÖÓ
-Gui, Add, Button, x122 y110 w100 h30 vButton15m g15m, 15 ·ÖÖÓ
-Gui, Add, Button, x232 y110 w100 h30 vButton20m g20m, 20 ·ÖÖÓ
-Gui, Add, Button, x342 y110 w100 h30 vButton30m g30m, 30 ·ÖÖÓ
-Gui, Add, Button, x342 y160 w100 h30 vButtont2t gt2t, ²»¶¨Ê±
-Gui, Add, Button, x%BNx% y%BNy% w20 h20 vButtonNext gSetIntervalTime, >
-Gui, Add, Button, x%BNx% y0 w20 h20 vButtonFull gFullScreen, +
-Gui, Add, Button, x%BNx% y0 w20 h20 vButtonRestore gGuiEscape, -
+Gui, Add, Picture, x0 y0 w%guiMaxWidth% h%guiMaxHeight% vstaticImage, %A_WorkingDir%\Data\Logo.png
+Gui, Add, Button, x22 y10 w100 h30 vButton5s g5s, 5 ç§’
+Gui, Add, Button, x+10 yp wp hp vButton10s g10s, 10 ç§’
+Gui, Add, Button, x+10 yp wp hp vButton20s g20s, 20 ç§’
+Gui, Add, Button, x+10 yp wp hp vButton30s g30s, 30 ç§’
+Gui, Add, Button, x22 y+20 wp hp vButton1m g1m, 1 åˆ†é’Ÿ
+Gui, Add, Button, x+10 yp wp hp vButton2m g2m, 2 åˆ†é’Ÿ
+Gui, Add, Button, x+10 yp wp hp vButton3m g3m, 3 åˆ†é’Ÿ
+Gui, Add, Button, x+10 yp wp hp vButton5m g5m, 5 åˆ†é’Ÿ
+Gui, Add, Button, x22 y+20 wp hp vButton10m g10m, 10 åˆ†é’Ÿ
+Gui, Add, Button, x+10 yp wp hp vButton15m g15m, 15 åˆ†é’Ÿ
+Gui, Add, Button, x+10 yp wp hp vButton20m g20m, 20 åˆ†é’Ÿ
+Gui, Add, Button, x+10 yp wp hp vButton30m g30m, 30 åˆ†é’Ÿ
+Gui, Add, Button, xp y+20 wp hp vButtont2t gt2t, ä¸å®šæ—¶
+Gui, Add, Button, x%BNx% y%BNy% w20 h20 vButtonNext gSetintervalTime, >
+Gui, Add, Button, xp y0 wp hp vButtonFull gFullScreen, +
+Gui, Add, Button, xp yp wp hp vButtonRestore gGuiEscape, -
 
-/* 
-Gui, Add, Button, x12 y160 w100 h30 vButton13 gSG_Button hwnd_Button13, Button
-Gui, Add, Button, x122 y160 w100 h30 vButton14 gSG_Button hwnd_Button14, Button
-Gui, Add, Button, x232 y160 w100 h30 vButton15 gSG_Button hwnd_Button15, Button
-Gui, Add, Button, x342 y160 w100 h30 vButton16 gSG_Button hwnd_Button16, Button
- */
-Gui, Show, x0 y0 w%GuimaxW% h%GuimaxH%, ManiacsImagePad
-gosub, HideTimeButton
+ShowHideTimeButton(0)
+Gui, Show, x0 y0 w%guiMaxWidth% h%guiMaxHeight%, ManiacsImagePad
+
 GuiControl,Hide,ButtonNext
 GuiControl,Hide,ButtonFull
 GuiControl,Hide,ButtonRestore
 Return
 
 5s:
-	Interval=5
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(5)
+Return
 
 10s:
-	Interval=10
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(10)
+Return
 
 20s:
-	Interval=20
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(20)
+Return
 
 30s:
-	Interval=30
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(30)
+Return
 
 1m:
-	Interval=60
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(60)
+Return
 
 2m:
-	Interval=120
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(120)
+Return
 
 3m:
-	Interval=180
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(180)
+Return
 
 5m:
-	Interval=300
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(300)
+Return
 
 10m:
-	Interval=600
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(600)
+Return
 
 15m:
-	Interval=900
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(900)
+Return
 
 20m:
-	Interval=1200
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(1200)
+Return
 
 30m:
-	Interval=1800
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(1800)
+Return
 
 t2t:
-	Interval=0
-	GuiControl,Show,ButtonFull
-	gosub, SetIntervalTime
-	Return
+SetintervalTime(0)
+Return
 
-ShowTimeButton:
-	GuiControl,Show,Button5s
-	GuiControl,Show,Button10s
-	GuiControl,Show,Button20s
-	GuiControl,Show,Button30s
-	GuiControl,Show,Button1m
-	GuiControl,Show,Button2m
-	GuiControl,Show,Button3m
-	GuiControl,Show,Button5m
-	GuiControl,Show,Button10m
-	GuiControl,Show,Button15m
-	GuiControl,Show,Button20m
-	GuiControl,Show,Button30m
-	GuiControl,Show,Buttont2t
-	GuiControl,Hide,ButtonNext
-	;GuiControl,Hide,ButtonFull
-	Return
-
-HideTimeButton:
-	GuiControl,Hide,Button5s
-	GuiControl,Hide,Button10s
-	GuiControl,Hide,Button20s
-	GuiControl,Hide,Button30s
-	GuiControl,Hide,Button1m
-	GuiControl,Hide,Button2m
-	GuiControl,Hide,Button3m
-	GuiControl,Hide,Button5m
-	GuiControl,Hide,Button10m
-	GuiControl,Hide,Button15m
-	GuiControl,Hide,Button20m
-	GuiControl,Hide,Button30m
-	GuiControl,Hide,Buttont2t
-	GuiControl,Show,ButtonNext
-	;GuiControl,Show,ButtonFull
-	Return
 
 IndexImage:
-	gosub, ShowTimeButton
-	FileDelete, %Tempfile%
-	WriteTimes=0
-	Loop, %A_WorkingDir%\Data\%A_ThisMenuItem%\*.*, 0, 0
-		{
-		If A_LoopFileExt in png,gif,jpg,bmp,tif
-			{
-			;msgbox,%A_LoopFileExt%
-			FileAppend, %A_LoopFileName%`n, %Tempfile%
-			WriteTimes:=WriteTimes+1
-			}
-		}
-	IfNotExist %Tempfile%
-		{
-		MsgBox,16,´íÎó£¡,ÔÚ´ËÄ¿Â¼ÏÂÕÒ²»µ½Ö§³ÖµÄÍ¼Æ¬¸ñÊ½£¡
-		reload
-		}
-
-	Return
-
-SetIntervalTime:
-	gosub, HideTimeButton
-	If Interval=0
+	Loop, %A_WorkingDir%\Data\*, 2, 0
 	{
-	gosub, ManiacsReadImage
+		Menu, tray, UnCheck, %A_LoopFileName%,
 	}
-	else
+	Menu, tray, Check, %A_ThisMenuItem%
+	Gosub, ManiacsReadImage
+	ShowHideTimeButton(1)
+	FileDelete, %Tempfile%
+
+	Loop, %A_WorkingDir%\Data\%A_ThisMenuItem%\*.*, 0, 0
 	{
-	gosub, ManiacsReadImage
-	Time:= Interval*1000
-	SetTimer, ManiacsReadImage, %Time%
+		If A_LoopFileExt in png,gif,jpg,bmp,tif
+		{
+			FileAppend, %A_LoopFileName%`n, %Tempfile%
+			maxImageNumber:=A_Index
+		}
+	}
+
+	IfNotExist %Tempfile%
+	{
+		MsgBox,16,é”™è¯¯ï¼,åœ¨æ­¤ç›®å½•ä¸‹æ‰¾ä¸åˆ°æ”¯æŒçš„å›¾ç‰‡æ ¼å¼ï¼
+		reload
 	}
 	Return
 
 ManiacsReadImage:
-	Random, Randomimage, 1, %WriteTimes% ; ÏÂÔØµØÖ·×ÜÊý
-	FileReadLine, CurrentImage, %Tempfile%, %Randomimage%
-	StringRight, ImageFormatName, CurrentImage, 4
-	StringLower, ImageFormatName, ImageFormatName
-;msgbox,%ImageFormatName%
-	If ImageFormatName in .bmp,.png ;(ImageFormatName=.bmp)||(ImageFormatName=.png)
+	previousLine:=currentLine
+
+	If (maxImageNumber>1)
+	{
+		Loop, 
 		{
-		;msgbox, %A_WorkingDir%\Data\%A_ThisMenuItem%\%CurrentImage%
-		imageloc=%A_WorkingDir%\Data\%A_ThisMenuItem%\%CurrentImage%
-		}
+			Random, currentLine, 1, %maxImageNumber%
+		}Until (currentLine!=previousLine)
+	}
+	Else
+	{
+		currentLine:=1
+		GuiControl,Hide,ButtonNext
+	}
+
+
+	FileReadLine, currentImage, %Tempfile%, %currentLine%
+
+	findDotPos:=InStr(currentImage, ".",, -1)
+	fileFormat:=SubStr(currentImage, findDotPos)
+	StringLower, fileFormat, fileFormat
+
+	If fileFormat in .bmp,.png
+	{
+		imageloc=%A_WorkingDir%\Data\%A_ThisMenuItem%\%currentImage%
+	}
 	else
-		{
-		FileCopy, %A_WorkingDir%\Data\%A_ThisMenuItem%\%CurrentImage%, %A_Temp%\%CurrentImage%.tmp ,1
-		imageloc=%A_Temp%\%CurrentImage%.tmp
-		}
-;msgbox,%imageloc%
+	{
+		FileCopy, %A_WorkingDir%\Data\%A_ThisMenuItem%\%currentImage%, %A_Temp%\%currentImage%.tmp ,1
+		imageloc=%A_Temp%\%currentImage%.tmp
+	}
+
 	If !pBitmap := Gdip_CreateBitmapFromFile(imageloc)
+	{
+		Try
 		{
-		MsgBox,16,´íÎó£¡,pBitmap ´íÎó£¡
-		reload
+			fileHash:=File_Hash("%A_WorkingDir%\Data\%A_ThisMenuItem%\%currentImage%", "MD5")
+			FileCreateDir, %A_WorkingDir%\Broken Images
+			FileMove, %A_WorkingDir%\Data\%A_ThisMenuItem%\%currentImage%, %A_WorkingDir%\Broken Images\%fileHash% %currentImage%, 1
 		}
+		Gosub, ManiacsReadImage
+	}
 
-	Width := Gdip_GetImageWidth(pBitmap)
-	Height := Gdip_GetImageHeight(pBitmap)
+	imageWidth:= Gdip_GetImageWidth(pBitmap)
+	imageHeight:= Gdip_GetImageHeight(pBitmap)
 
-;	Width=%Width%
-;	Height=%Height%
+	xx:=Abs((guiMaxWidth-(imageWidth/imageHeight)*guiMaxWidth)/2)
+	yy:=Abs((guiMaxHeight-(imageHeight/imageWidth)*guiMaxHeight)/2)
 
+	if (imageHeight>=imageWidth) && (imageHeight>guiMaxHeight)
+	{
+		GuiControl,move,staticImage,x%xx% y0
+		GuiControl,,staticImage, *w-1 *h%guiMaxHeight% %A_WorkingDir%\Data\%A_ThisMenuItem%\%currentImage%
+	}
+	else If (imageHeight<imageWidth) && (imageWidth>guiMaxWidth)
+	{
+		GuiControl,move,staticImage,x0 y%yy%
+		GuiControl,,staticImage, *w%guiMaxWidth% *h-1 %A_WorkingDir%\Data\%A_ThisMenuItem%\%currentImage%
+	}
+	else
+	{
+		xx:=Abs((guiMaxWidth-imageWidth)/2)
+		yy:=Abs((guiMaxHeight-imageHeight)/2)
 
-	;yy:=(480-Height)/2
-
-
-	;msgbox, %xx% %yy%
-
-	if (Height > Width) || (Height = Width)
-		{
-		if Height>%GuimaxH%
-			{
-
-			xx:=(GuimaxW-(Width/Height)*GuimaxW)/2
-			StringReplace,xx,xx,-,,All
-			yy:=(GuimaxH-(Height/Width)*GuimaxH)/2
-			StringReplace,yy,yy,-,,All
-			GuiControl,move,StaticImage,x%xx% y0
-			GuiControl,,StaticImage, *w-1 *h%GuimaxH% %A_WorkingDir%\Data\%A_ThisMenuItem%\%CurrentImage%
-
-			}
-		else
-			{
-			xx:=(GuimaxW-Width)/2
-			StringReplace,xx,xx,-,,All
-			yy:=(GuimaxH-Height)/2
-			StringReplace,yy,yy,-,,All
-			GuiControl,move,StaticImage,x%xx% y%yy%
-			GuiControl,,StaticImage, *w0 *h0 %A_WorkingDir%\Data\%A_ThisMenuItem%\%CurrentImage%
-			}
-		}
-	/* 
-	else if Width > %Height%
-		{
-		if Width>480
-		GuiControl,,StaticImage,*w480 *h-1 %A_WorkingDir%\Data\%A_ThisMenuItem%\%CurrentImage%
-		if Width<480
-		GuiControl,,StaticImage,*w0 *h0 %A_WorkingDir%\Data\%A_ThisMenuItem%\%CurrentImage%
-		}
-	 */
-	else if Height < Width
-		{
-		if Width>%GuimaxW%
-			{
-			xx:=(GuimaxW-(Width/Height)*GuimaxW)/2
-			StringReplace,xx,xx,-,,All
-			yy:=(GuimaxH-(Height/Width)*GuimaxH)/2
-			StringReplace,yy,yy,-,,All
-			GuiControl,move,StaticImage,x0 y%yy%
-			GuiControl,,StaticImage, *w%GuimaxW% *h-1 %A_WorkingDir%\Data\%A_ThisMenuItem%\%CurrentImage%
-
-			}
-		else
-			{
-			xx:=(GuimaxW-Width)/2
-			StringReplace,xx,xx,-,,All
-			yy:=(GuimaxH-Height)/2
-			StringReplace,yy,yy,-,,All
-			GuiControl,move,StaticImage,x%xx% y%yy%
-			GuiControl,,StaticImage, *w0 *h0 %A_WorkingDir%\Data\%A_ThisMenuItem%\%CurrentImage%
-			}
-		}
-		Return
+		GuiControl,move,staticImage,x%xx% y%yy%
+		GuiControl,,staticImage, *w0 *h0 %A_WorkingDir%\Data\%A_ThisMenuItem%\%currentImage%
+	}
+	Return
 
 
 Update:
 	; please retain the original links and related notes.
 	run https://github.com/millionart/ManiacsImagePad/releases
 	return
-/* 
-GuiSize:
-	WinGet,ControlList,ControlList
-	Loop,Parse,ControlList,`n
-	ControlMove,%A_LoopField%,, ,A_GuiWidth,A_GuiHeight
-	return
-
-Cancel:
-	Gui, Minimize
-	return
- */
 
 FullScreen:
+	guiMaxWidth:=virtualWidth
+	guiMaxHeight:=virtualHeight
+	BNx:=guiMaxWidth-20
+	BNy:=guiMaxHeight-20
+	guiMax:=1
+
 	GuiControl,Hide,ButtonFull
 	GuiControl,Show,ButtonRestore
-	GuimaxW=%VirtualWidth%
-	GuimaxH=%VirtualHeight%
-	;msgbox,%VirtualWidth% %VirtualHeight%
-	BNx:=GuimaxW-20
-	BNy:=GuimaxH-20
 	GuiControl,move,ButtonNext,x%BNx% y%BNy%
 	GuiControl,move,ButtonRestore,x%BNx% y0
 	Gui, Maximize
-	gosub, SetIntervalTime
-	;%VirtualWidth%, %VirtualHeight%
+	SetintervalTime()
 	return
 
 GuiEscape:
-	GuiControl,Hide,ButtonRestore
+	guiMaxWidth:=480
+	guiMaxHeight:=480
+	BNx:=guiMaxWidth-20
+	BNy:=guiMaxHeight-20
+	guiMax:=0
+
 	GuiControl,Show,ButtonFull
-	GuimaxW=480
-	GuimaxH=480
-	BNx:=GuimaxW-20
-	BNy:=GuimaxH-20
+	GuiControl,Hide,ButtonRestore
 	GuiControl,move,ButtonNext,x%BNx% y%BNy%
 	GuiControl,move,ButtonRestore,x%BNx% y0
 	Gui, Restore
-	gosub, SetIntervalTime
+	SetintervalTime()
 	return
 
 GuiClose:
@@ -356,28 +248,44 @@ WinClose:
 	ExitApp
 	return
 
+ShowHideTimeButton(show)
+{
+	display:=show>0?"Show":"Hide"
+	GuiControl,%display%,Button5s
+	GuiControl,%display%,Button10s
+	GuiControl,%display%,Button20s
+	GuiControl,%display%,Button30s
+	GuiControl,%display%,Button1m
+	GuiControl,%display%,Button2m
+	GuiControl,%display%,Button3m
+	GuiControl,%display%,Button5m
+	GuiControl,%display%,Button10m
+	GuiControl,%display%,Button15m
+	GuiControl,%display%,Button20m
+	GuiControl,%display%,Button30m
+	GuiControl,%display%,Buttont2t
+	display:=show<1?"Show":"Hide"
+	GuiControl,%display%,ButtonNext
+}
+
+SetintervalTime(interval:=-1)
+{
+	global
+	If (interval>-1) && (guiMax!=1)
+		GuiControl,Show,ButtonFull
+
+	ShowHideTimeButton(0)
+	gosub, ManiacsReadImage
+
+	If (interval>0)
+		SetTimer, ManiacsReadImage, % interval*1000
+}
+
 WM_LBUTTONDOWN()
-	{
+{
 	If A_Gui = 1
-		PostMessage, 0xA1, 2 ; WM_NCLButtonDOWN
-	}
+		PostMessage, 0xA1, 2
+}
 
-/* 
-WSTR(ByRef w, s)
-	{
-		VarSetCapacity(w, StrLen(s)*2+1)
-		DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "str", s, "int", -1, "uint", &w, "int", StrLen(s)+1)
-		Return &w
-	}
-
-RECTWIDTH(ByRef rcCLient)
-	{
-		Return NumGet(rcClient, 8)-NumGet(rcClient, 0)  ; Right-left
-	}
-
-RECTHEIGHT(ByRef rcClient)
-	{
-		Return NumGet(rcClient, 12)-NumGet(rcCLient, 4) ; Bottom-top
-	}
- */
 #include %A_scriptdir%\Gdip.ahk
+#include %A_scriptdir%\FileHelperAndHash.ahk
